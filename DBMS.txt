@@ -1,0 +1,181 @@
+CREATE DATABASE asignment;
+
+USE asignment
+
+CREATE TABLE salespeople
+    -> (snum INT PRIMARY KEY,
+    -> sname VARCHAR(20) UNIQUE,
+    -> city VARCHAR(20),
+    -> comm INT);
+
+
+INSERT INTO salespeople VALUES
+    -> (1001,'Peel','london',12),(1002,'Serres','sanjose',13),(1004,'Motika','london',11),
+(1007,'Rifkin','Barcelona',15),(1003,'Axelrod','Newyork',10);
+
+select * from salespeople
+    -> ;
++------+---------+-----------+------+
+| snum | sname   | city      | comm |
++------+---------+-----------+------+
+| 1001 | Peel    | london    |   12 |
+| 1002 | Serres  | sanjose   |   13 |
+| 1003 | Axelrod | Newyork   |   10 |
+| 1004 | Motika  | london    |   11 |
+| 1007 | Rifkin  | Barcelona |   15 |
++------+---------+-----------+------+
+
+CREATE TABLE customers
+(cnum INT PRIMARY KEY,
+cname VARCHAR(20),
+city VARCHAR(10) NOT NULL,
+snum INT,
+FOREIGN KEY (snum) REFERENCES salespeople(snum) ON DELETE SET NULL);
+
+INSERT INTO customers VALUES
+    -> (2002,'Giovanni','Rome',1003),
+    -> (2003,'Liu','Sanjose',1002),
+    -> (2004,'Grass','Berlin',1002),
+    -> (2006,'Clemens','London',1001),
+    -> (2008,'Cisneros','Sanjose',1007),
+    -> (2007,'Pereira','Rome',1004);
+
+SELECT * FROM customers
+    -> ;
++------+----------+---------+------+
+| cnum | cname    | city    | snum |
++------+----------+---------+------+
+| 2001 | Hoffman  | London  | 1001 |
+| 2002 | Giovanni | Rome    | 1003 |
+| 2003 | Liu      | Sanjose | 1002 |
+| 2004 | Grass    | Berlin  | 1002 |
+| 2006 | Clemens  | London  | 1001 |
+| 2007 | Pereira  | Rome    | 1004 |
+| 2008 | Cisneros | Sanjose | 1007 |
++------+----------+---------+------+
+
+
+CREATE TABLE orders
+(onum INT PRIMARY KEY,
+amt FLOAT(10,2),
+odate DATE,
+cnum INT,
+snum INT,
+FOREIGN KEY(cnum) REFERENCES customers(cnum) ON DELETE SET NULL,
+FOREIGN KEY(snum) REFERENCES salespeople(snum) ON DELETE SET NULL);
+
+INSERT INTO orders VALUES
+    -> (3001,18.69,'1990-10-3',2008,1007),
+    -> (3003,767.19,'1990-10-3',2001,1001),
+    -> (3002,1900.10,'1990-10-3',2007,1004),
+    -> (3005,5160.45,'1990-10-3',2003,1002),
+    -> (3006,1098.16,'1990-10-3',2008,1007),
+    -> (3009,1713.23,'1990-10-4',2002,1003),
+    -> (3007,75.75,'1990-10-4',2004,1002),
+    -> (3008,4273.00,'1990-10-5',2006,1001),
+    -> (3010,1309.95,'1990-10-6',2004,1002),
+    -> (3011,9891.88,'1990-10-6',2006,1001);
+
+SELECT * FROM orders;
++------+---------+------------+------+------+
+| onum | amt     | odate      | cnum | snum |
++------+---------+------------+------+------+
+| 3001 |   18.69 | 1990-10-03 | 2008 | 1007 |
+| 3002 | 1900.10 | 1990-10-03 | 2007 | 1004 |
+| 3003 |  767.19 | 1990-10-03 | 2001 | 1001 |
+| 3005 | 5160.45 | 1990-10-03 | 2003 | 1002 |
+| 3006 | 1098.16 | 1990-10-03 | 2008 | 1007 |
+| 3007 |   75.75 | 1990-10-04 | 2004 | 1002 |
+| 3008 | 4273.00 | 1990-10-05 | 2006 | 1001 |
+| 3009 | 1713.23 | 1990-10-04 | 2002 | 1003 |
+| 3010 | 1309.95 | 1990-10-06 | 2004 | 1002 |
+| 3011 | 9891.88 | 1990-10-06 | 2006 | 1001 |
++------+---------+------------+------+------+
+
+
+describe salespeople;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| snum  | int         | NO   | PRI | NULL    |       |
+| sname | varchar(20) | YES  | UNI | NULL    |       |
+| city  | varchar(20) | YES  |     | NULL    |       |
+| comm  | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> describe customers;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cnum  | int         | NO   | PRI | NULL    |       |
+| cname | varchar(20) | YES  |     | NULL    |       |
+| city  | varchar(10) | NO   |     | NULL    |       |
+| snum  | int         | YES  | MUL | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> describe orders;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| onum  | int         | NO   | PRI | NULL    |       |
+| amt   | float(10,2) | YES  |     | NULL    |       |
+| odate | date        | YES  |     | NULL    |       |
+| cnum  | int         | YES  | MUL | NULL    |       |
+| snum  | int         | YES  | MUL | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+
+1. Count the number of Salesperson whose name begin with ‘a’/’A’
+
+SELECT sname, COUNT(sname) from salespeople where sname LIKE 'A%' GROUP BY sname;
+---------+--------------+
+| sname   | COUNT(sname) |
++---------+--------------+
+| Axelrod |            1 |
++---------+--------------+
+
+2. Display all the Salesperson whose all orders worth is more than Rs. 2000.
+
+SELECT salespeople.sname, orders.snum, orders.amt from orders,salespeople WHERE orders.amt>2000 AND orders.snum=salespeople.snum;
+--------+------+---------+
+| sname  | snum | amt     |
++--------+------+---------+
+| Serres | 1002 | 5160.45 |
+| Peel   | 1001 | 4273.00 |
+| Peel   | 1001 | 9891.88 |
++--------+------+---------+
+
+3. Count the number of Salesperson belonging to Newyork.
+
+select sname,city, count(snum) from salespeople where city = 'Newyork';
++---------+---------+-------------+
+| sname   | city    | count(snum) |
++---------+---------+-------------+
+| Axelrod | Newyork |           1 |
++---------+---------+-------------+
+
+4. Display the number of Salespeople belonging to London and belonging to Paris.
+
+select city, count(sname) from salespeople where city = 'london' or city = 'paris';
+--------+--------------+
+| city   | count(sname) |
++--------+--------------+
+| london |            2 |
++--------+--------------+
+
+
+5. Display the number of orders taken by each Salesperson and their date of orders.
+
+SELECT orders.snum, salespeople.sname, COUNT(odate) FROM orders,salespeople WHERE orders.snum = salespeople.snum GROUP BY salespeople.snum;
++------+---------+--------------+
+| snum | sname   | COUNT(odate) |
++------+---------+--------------+
+| 1001 | Peel    |            3 |
+| 1002 | Serres  |            3 |
+| 1003 | Axelrod |            1 |
+| 1004 | Motika  |            1 |
+| 1007 | Rifkin  |            2 |
++------+---------+--------------+
